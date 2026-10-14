@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}{{ form.instance.pk|yesno:"Edit,Add" }} product · Shop Inventory{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div>
+    <h1>{% if form.instance.pk %}Edit{% else %}Add{% endif %} product</h1>
+    <p class="muted">Quantity and price are validated by <code>valcalc</code> on submit.</p>
+  </div>
+</section>
+
+<div class="grid-2">
+  <section class="panel">
+    <form method="post" novalidate class="stacked">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="form-actions">
+        <button type="submit" class="btn">
+          {% if form.instance.pk %}Save changes{% else %}Create product{% endif %}
+        </button>
+        <a class="btn ghost" href="{% url 'inventory:product_list' %}">Cancel</a>
+      </div>
+    </form>
+  </section>
+
+  <aside class="panel">
+    <h3>Live value preview</h3>
+    <p class="muted">quantity × unit price, rounded with the same
+      <code>valcalc.round_money()</code> the server uses.</p>
+    <div class="preview">
+      <span>Line value</span>
+      <strong id="live-total">—</strong>
+    </div>
+    <p class="muted small" id="preview-hint">Type a quantity and a price to see it update.</p>
+  </aside>
+</div>
+{% endblock %}

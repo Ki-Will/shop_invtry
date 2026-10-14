@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load inventory_extras %}
+
+{% block title %}Delete product · Shop Inventory{% endblock %}
+
+{% block content %}
+<section class="panel narrow">
+  <h1>Delete product?</h1>
+  <p>
+    You are about to delete <strong>{{ object.name }}</strong>
+    (<code>{{ object.sku }}</code>) —
+    {{ object.quantity }} unit{{ object.quantity|pluralize }} worth
+    <strong>${{ object.stock_value|money }}</strong>. This cannot be undone.
+  </p>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-actions">
+      <button type="submit" class="btn danger"
+              data-confirm="Delete {{ object.name }} permanently?">Yes, delete</button>
+      <a class="btn ghost" href="{% url 'inventory:product_list' %}">Cancel</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

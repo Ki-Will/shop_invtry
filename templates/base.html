@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Shop Inventory{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{% url 'inventory:dashboard' %}">Shop<span> Inventory</span></a>
+    <nav>
+      <a href="{% url 'inventory:dashboard' %}"
+         class="{% if request.resolver_match.view_name == 'inventory:dashboard' %}active{% endif %}">Dashboard</a>
+      <a href="{% url 'inventory:product_list' %}"
+         class="{% if request.resolver_match.view_name == 'inventory:product_list' %}active{% endif %}">Products</a>
+      <a href="{% url 'inventory:product_add' %}"
+         class="{% if request.resolver_match.view_name == 'inventory:product_add' %}active{% endif %}">Add product</a>
+      <a href="{% url 'admin:index' %}">Admin</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li class="msg {{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    Built with Django 5.2 · every total powered by <code>valcalc 0.1.0</code>
+  </footer>
+
+  <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

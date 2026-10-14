@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load inventory_extras %}
+
+{% block title %}Dashboard · Shop Inventory{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div>
+    <h1>Dashboard</h1>
+    <p class="muted">Live stock numbers — every total computed by <code>valcalc</code>.</p>
+  </div>
+  <a class="btn" href="{% url 'inventory:product_add' %}">+ Add product</a>
+</section>
+
+<section class="cards">
+  <article class="card">
+    <h2>{{ product_count }}</h2>
+    <p>Products</p>
+  </article>
+  <article class="card">
+    <h2>{{ total_units|floatformat:0 }}</h2>
+    <p>Units in stock</p>
+  </article>
+  <article class="card highlight">
+    <h2>${{ total_value|money }}</h2>
+    <p>Stock value</p>
+  </article>
+  <article class="card {% if low_stock %}warn{% endif %}">
+    <h2>{{ low_stock|length }}</h2>
+    <p>Low stock ({{ low_share|floatformat:1 }}%)</p>
+  </article>
+</section>
+
+<div class="grid-2">
+  <section class="panel">
+    <h3>Category breakdown</h3>
+    {% if breakdown %}
+      <table class="table">
+        <thead>
+          <tr><th>Category</th><th class="num">Items</th><th class="num">Value</th><th>Share</th></tr>
+        </thead>
+        <tbody>
+          {% for row in breakdown %}
+          <tr>
+            <td>{{ row.category }}</td>
+            <td class="num">{{ row.count }}</td>
+            <td class="num">${{ row.value|money }}</td>
+            <td>
+              <div class="bar" aria-hidden="true"><span style="width: {{ row.share }}%"></span></div>
+              {{ row.share }}%
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <p class="muted small">Share computed with <code>valcalc.percent_of()</code> · retail incl. 18% VAT: <strong>${{ vat_total|money }}</strong></p>
+    {% else %}
+      <div class="empty">
+        <p>No categories yet.</p>
+        <a class="btn" href="{% url 'admin:index' %}">Add one in the admin</a>
+      </div>
+    {% endif %}
+  </section>
+
+  <section class="panel">
+    <h3>Low stock alerts</h3>
+    {% if low_stock %}
+      <table class="table">
+        <thead>
+          <tr><th>Product</th><th class="num">Qty</th><th class="num">Threshold</th><th class="num">Restock cost</th></tr>
+        </thead>
+        <tbody>
+          {% for p in low_stock %}
+          <tr>
+            <td><a class="link" href="{% url 'inventory:product_edit' p.pk %}">{{ p.name }}</a></td>
+            <td class="num"><span class="badge badge-danger">{{ p.quantity }}</span></td>
+            <td class="num">{{ p.reorder_level }}</td>
+            <td class="num">${{ p.restock_cost|money }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <p class="muted small">Estimated restock: <strong>${{ restock_cost|money }}</strong> (via <code>valcalc.restock math</code>)</p>
+    {% else %}
+      <p class="muted">Everything is above its reorder level. 🎉</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
