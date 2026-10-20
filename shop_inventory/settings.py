@@ -119,6 +119,11 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
+# Authentication (login/logout/... provided by django.contrib.auth.urls)
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'inventory:dashboard'
+LOGOUT_REDIRECT_URL = 'login'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

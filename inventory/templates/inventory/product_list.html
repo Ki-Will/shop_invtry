@@ -15,7 +15,9 @@
   <div class="actions">
     <input type="search" id="product-search" placeholder="Search name or SKU…"
            autocomplete="off" aria-label="Search products" value="{{ query }}">
-    <a class="btn" href="{% url 'inventory:product_add' %}">+ Add product</a>
+    {% if perms.inventory.add_product %}
+      <a class="btn" href="{% url 'inventory:product_add' %}">+ Add product</a>
+    {% endif %}
   </div>
 </section>
 
@@ -51,8 +53,12 @@
             {% endif %}
           </td>
           <td class="row-actions">
-            <a class="link" href="{% url 'inventory:product_edit' p.pk %}">Edit</a>
-            <a class="link danger" href="{% url 'inventory:product_delete' p.pk %}">Delete</a>
+            {% if perms.inventory.change_product %}
+              <a class="link" href="{% url 'inventory:product_edit' p.pk %}">Edit</a>
+            {% endif %}
+            {% if perms.inventory.delete_product %}
+              <a class="link danger" href="{% url 'inventory:product_delete' p.pk %}">Delete</a>
+            {% endif %}
           </td>
         </tr>
         {% endfor %}
@@ -62,7 +68,9 @@
   {% else %}
     <div class="empty">
       <p>No products yet — add your first item.</p>
-      <a class="btn" href="{% url 'inventory:product_add' %}">Add product</a>
+      {% if perms.inventory.add_product %}
+        <a class="btn" href="{% url 'inventory:product_add' %}">Add product</a>
+      {% endif %}
     </div>
   {% endif %}
 </section>

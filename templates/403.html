@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Not allowed · Shop Inventory{% endblock %}
+
+{% block content %}
+<section class="panel narrow empty">
+  <h1>403 — Not allowed</h1>
+  <p>
+    Your role
+    (<strong>{{ user.groups.all|join:", "|default:"no group" }}</strong>)
+    does not include permission for this action.
+  </p>
+  <a class="btn" href="{% url 'inventory:dashboard' %}">Back to dashboard</a>
+</section>
+{% endblock %}
