@@ -9,7 +9,9 @@
     <h1>Dashboard</h1>
     <p class="muted">Live stock numbers — every total computed by <code>valcalc</code>.</p>
   </div>
-  <a class="btn" href="{% url 'inventory:product_add' %}">+ Add product</a>
+  {% if perms.inventory.add_product %}
+    <a class="btn" href="{% url 'inventory:product_add' %}">+ Add product</a>
+  {% endif %}
 </section>
 
 <section class="cards">
@@ -57,7 +59,9 @@
     {% else %}
       <div class="empty">
         <p>No categories yet.</p>
-        <a class="btn" href="{% url 'admin:index' %}">Add one in the admin</a>
+        {% if user.is_staff %}
+          <a class="btn" href="{% url 'admin:index' %}">Add one in the admin</a>
+        {% endif %}
       </div>
     {% endif %}
   </section>

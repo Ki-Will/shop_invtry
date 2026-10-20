@@ -11,14 +11,34 @@
   <header class="topbar">
     <a class="brand" href="{% url 'inventory:dashboard' %}">Shop<span> Inventory</span></a>
     <nav>
-      <a href="{% url 'inventory:dashboard' %}"
-         class="{% if request.resolver_match.view_name == 'inventory:dashboard' %}active{% endif %}">Dashboard</a>
-      <a href="{% url 'inventory:product_list' %}"
-         class="{% if request.resolver_match.view_name == 'inventory:product_list' %}active{% endif %}">Products</a>
-      <a href="{% url 'inventory:product_add' %}"
-         class="{% if request.resolver_match.view_name == 'inventory:product_add' %}active{% endif %}">Add product</a>
-      <a href="{% url 'admin:index' %}">Admin</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'inventory:dashboard' %}"
+           class="{% if request.resolver_match.view_name == 'inventory:dashboard' %}active{% endif %}">Dashboard</a>
+        {% if perms.inventory.view_product %}
+          <a href="{% url 'inventory:product_list' %}"
+             class="{% if request.resolver_match.view_name == 'inventory:product_list' %}active{% endif %}">Products</a>
+        {% endif %}
+        {% if perms.inventory.add_product %}
+          <a href="{% url 'inventory:product_add' %}"
+             class="{% if request.resolver_match.view_name == 'inventory:product_add' %}active{% endif %}">Add product</a>
+        {% endif %}
+        {% if user.is_staff %}
+          <a href="{% url 'admin:index' %}">Admin</a>
+        {% endif %}
+      {% endif %}
     </nav>
+
+    <div class="nav-auth">
+      {% if user.is_authenticated %}
+        <span class="nav-user">{{ user.username }}{% if user.is_superuser %} · superuser{% elif user.groups.all %} · {{ user.groups.all|join:", " }}{% endif %}</span>
+        <form class="logout-form" method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button class="link-button" type="submit">Log out</button>
+        </form>
+      {% else %}
+        <a class="link-button" href="{% url 'login' %}">Log in</a>
+      {% endif %}
+    </div>
   </header>
 
   <main class="container">
